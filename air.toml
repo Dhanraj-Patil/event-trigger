@@ -1,0 +1,28 @@
+# Root directory of your project
+root = "."
+
+# Temporary directory for compiled binary
+tmp_dir = "tmp"
+
+[build]
+  # Build from the cmd/ directory where main.go exists
+  cmd = "cd cmd && go build -o ../tmp/main.exe"
+  bin = "./tmp/main.exe"  # Windows requires .exe extension
+
+  # Watch file changes in these types
+  include_ext = ["go", "yaml", "toml", "json"]
+
+  # Exclude unnecessary directories
+  exclude_dir = ["vendor", "docs", "tmp"]
+
+  # Delay before restarting (in milliseconds)
+  delay = 1000
+
+[log]
+  level = "debug"
+  color = true
+
+[watch]
+  # Watch only inside cmd/ (since main.go is there)
+  paths = ["cmd"]
+  exclude_dirs = ["vendor", "docs", "tmp"]

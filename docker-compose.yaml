@@ -1,0 +1,72 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: event_trigger
+    ports:
+      - "8080:8080"
+    environment:
+      - GIN_MODE=release
+      - MONOGDB_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=event-trigger
+      - REDIS_ADDR=redis:6379
+    networks:
+      - backend
+    depends_on:
+      - mongodb
+      - redis
+    restart: always  # Auto-restart if crashed
+
+  worker:
+    build: .
+    container_name: worker_server
+    command: ["/worker"]  # Override CMD to run worker instead of main
+    environment:
+      - REDIS_ADDR=redis:6379
+    networks:
+      - backend
+    depends_on:
+      - mongodb
+      - redis
+    restart: always  # Auto-restart if crashed
+
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  asynqmon:
+    image: hibiken/asynqmon
+    container_name: asynqmon
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_ADDR=redis:6379
+    command: ["--redis-addr=redis:6379", "--port=8081"]
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  mongo_data:

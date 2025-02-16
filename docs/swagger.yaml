@@ -1,0 +1,194 @@
+basePath: /
+definitions:
+  handler.EditTrigger:
+    properties:
+      message:
+        type: string
+      phoneNo:
+        type: string
+      schedule:
+        type: string
+    type: object
+  handler.Trigger:
+    properties:
+      message:
+        type: string
+      phoneNo:
+        type: string
+      schedule:
+        type: string
+      userId:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+  description: This is a sample API documentation using Swagger in Go.
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Event-Trigger
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Health check endpoint
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Event Trigger Platform running.
+          schema:
+            type: string
+      summary: Ping the server
+      tags:
+      - Health
+  /api/trigger:
+    delete:
+      consumes:
+      - text/plain
+      description: Creates a trigger that calls an API at a scheduled time
+      parameters:
+      - description: Enter id for trigger deletion
+        in: query
+        name: triggerId
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a trigger by id
+      tags:
+      - Triggers
+    post:
+      consumes:
+      - application/json
+      description: Creates a trigger that calls an API at a scheduled time
+      parameters:
+      - description: Trigger Data
+        in: body
+        name: trigger
+        required: true
+        schema:
+          $ref: '#/definitions/handler.Trigger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Trigger'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new trigger
+      tags:
+      - Triggers
+    put:
+      consumes:
+      - application/json
+      description: Creates a trigger that calls an API at a scheduled time
+      parameters:
+      - description: Enter id to edit trigger
+        in: query
+        name: triggerId
+        required: true
+        type: string
+      - description: Trigger Data
+        in: body
+        name: trigger
+        required: true
+        schema:
+          $ref: '#/definitions/handler.EditTrigger'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.EditTrigger'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Edit a trigger
+      tags:
+      - Triggers
+  /api/trigger-test:
+    post:
+      consumes:
+      - application/json
+      description: Test event trigger
+      parameters:
+      - description: Trigger Data
+        in: body
+        name: trigger
+        required: true
+        schema:
+          $ref: '#/definitions/handler.Trigger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Trigger'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Test trigger
+      tags:
+      - Trigger-Test
+  /api/triggers:
+    get:
+      consumes:
+      - text/plain
+      description: Creates a trigger that calls an API at a scheduled time
+      parameters:
+      - description: Enter userId
+        in: query
+        name: userId
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.Trigger'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all triggers for a user
+      tags:
+      - Triggers
+swagger: "2.0"
