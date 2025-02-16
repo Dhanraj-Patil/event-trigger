@@ -1,7 +1,7 @@
 # Event-Trigger
 Sends scheduled text messages by making api calls to Twilio API when scheduled time is me. Achieved by using asynq to schedule tasks in future. Docker compose image consits of event-trigger server, worker server, mongodb, redis, asynqmon. Asynqmon helps in monitoring the data in queue. Event trigger data logs are retained for 2hr and are written to 'event-logs' dir which are later deleted in 46hrs. Total docker image size < 1Gib. Cost of running is upto $4 on digital ocean.
 
-Could not deploy to cloud due to lack of free tier. Already used up free credits on GCP, Azure, AWS
+Could not deploy to cloud due to lack of free tier. Already used up free credits on GCP, Azure, digiralOcean, etc.
 
 ## How to run
 - Run the following commands
