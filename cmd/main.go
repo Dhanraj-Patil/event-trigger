@@ -9,6 +9,7 @@ import (
 	"github.com/Dhanraj-Patil/event-trigger/internal/handler"
 	"github.com/Dhanraj-Patil/event-trigger/internal/scheduler"
 	"github.com/Dhanraj-Patil/event-trigger/internal/utils"
+	"github.com/gin-contrib/cors"
 
 	_ "github.com/Dhanraj-Patil/event-trigger/docs"
 	"github.com/gin-gonic/gin"
@@ -31,6 +32,14 @@ func main() {
 	database.InitDB()
 	scheduler.InitAsynqClient()
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Allow all domains (change if needed)
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type, Accept"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: false, // Since you don’t have authentication
+	}))
+
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	handler.EventRouter(router)
