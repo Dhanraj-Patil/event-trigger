@@ -2,6 +2,7 @@ package integration
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/joho/godotenv"
 	"github.com/twilio/twilio-go"
@@ -28,5 +29,6 @@ func TwilioSMSAPI(phoneNo string, message string) (string, error) {
 		return "", err
 	}
 	response, _ := json.Marshal(*resp)
+	log.Println(string(response))
 	return string(response), err
 }
