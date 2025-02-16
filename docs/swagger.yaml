@@ -20,7 +20,7 @@ definitions:
       userId:
         type: string
     type: object
-host: c1e7-60-243-4-49.ngrok-free.app
+host: localhost:8080
 info:
   contact:
     email: support@example.com
