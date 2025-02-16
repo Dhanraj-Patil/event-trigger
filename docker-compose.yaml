@@ -21,7 +21,7 @@ services:
   worker:
     build: .
     container_name: worker_server
-    command: ["/worker"]  # Override CMD to run worker instead of main
+    command: ["./worker"]  # Override CMD to run worker instead of main
     environment:
       - REDIS_ADDR=redis:6379
     networks:

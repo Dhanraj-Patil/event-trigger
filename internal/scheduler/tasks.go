@@ -7,6 +7,7 @@ import (
 	"log"
 
 	integration "github.com/Dhanraj-Patil/event-trigger/internal/integrations"
+	"github.com/Dhanraj-Patil/event-trigger/internal/utils"
 	"github.com/hibiken/asynq"
 )
 
@@ -29,13 +30,17 @@ func NewSendSMSTask(phoneNo string, message string) (*asynq.Task, error) {
 
 func HandleSendSMSTask(ctx context.Context, t *asynq.Task) error {
 	var p SendSMSPayload
+	taskId, ok := asynq.GetTaskID(ctx)
+
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
 
 	log.Printf("Sending SMS to Number: +91%s, Message: %s", p.PhoneNo, p.Message)
-	if err := integration.TwilioSMSAPI(p.PhoneNo, p.Message); err != nil {
-		log.Fatalf("%s", err.Error())
+	res, err := integration.TwilioSMSAPI(p.PhoneNo, p.Message)
+	if err != nil && ok {
+		utils.LogById(taskId, err.Error())
 	}
+	utils.LogById(taskId, res)
 	return nil
 }

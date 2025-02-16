@@ -2,16 +2,17 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/Dhanraj-Patil/event-trigger/internal/scheduler"
 	"github.com/hibiken/asynq"
+	"github.com/joho/godotenv"
 )
 
-const redisAddr = "redis:6379"
-
 func main() {
+	godotenv.Load()
 	srv := asynq.NewServer(
-		asynq.RedisClientOpt{Addr: redisAddr},
+		asynq.RedisClientOpt{Addr: os.Getenv("REDIS_ADDR")},
 		asynq.Config{
 			Concurrency: 10,
 		},

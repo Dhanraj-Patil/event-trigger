@@ -17,18 +17,19 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /worker ./worker/worker.go
 RUN chmod +x /main /worker
 
 # Step 2: Runtime Stage
-# FROM alpine:latest
+FROM alpine:latest
 
-# WORKDIR /root/
+WORKDIR /root/
 
 # Install dependencies (optional, for debugging)
 # RUN apk --no-cache add ca-certificates
 
 # Copy the compiled binary from builder stage
-# COPY --from=builder /app/main .
+COPY --from=builder /main .
+COPY --from=builder /worker .
 
 # Expose the application's port
 EXPOSE 8080:8080
 
 # Run the application
-CMD ["/main"]
+CMD ["./main"]

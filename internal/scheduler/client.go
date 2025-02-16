@@ -1,16 +1,16 @@
 package scheduler
 
 import (
+	"os"
 	"time"
 
 	"github.com/Dhanraj-Patil/event-trigger/internal/models"
 	"github.com/Dhanraj-Patil/event-trigger/internal/utils"
 	"github.com/hibiken/asynq"
+	"github.com/joho/godotenv"
 )
 
 var client *asynq.Client
-
-const redisAddr = "redis:6379"
 
 type Trigger struct {
 	UserId   string    `json:"userId"`
@@ -22,7 +22,8 @@ type Trigger struct {
 }
 
 func InitAsynqClient() {
-	client = asynq.NewClient(asynq.RedisClientOpt{Addr: redisAddr})
+	godotenv.Load()
+	client = asynq.NewClient(asynq.RedisClientOpt{Addr: os.Getenv("REDIS_ADDR")})
 	// defer client.Close()
 }
 
@@ -42,20 +43,20 @@ func TestRun(data *models.Trigger) (*asynq.TaskInfo, error) {
 	return info, nil
 }
 
-func ScheduleTask(data *models.Trigger) (string, error) {
+func ScheduleTask(data *models.Trigger) (*asynq.TaskInfo, error) {
 	task, err := NewSendSMSTask(data.PhoneNo, data.Message)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	info, err := client.Enqueue(task, asynq.ProcessAt(data.Schedule), asynq.Retention(2*time.Hour))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	var log models.EventLog
 	log.Request = *data
 	log.Trigger = *info
 	utils.LogEvent(log)
-	return info.ID, nil
+	return info, nil
 }
 
 // func SchedulePeriodicTask(data *models.Trigger) (string, error) {

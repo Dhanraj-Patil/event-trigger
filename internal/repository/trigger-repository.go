@@ -19,7 +19,7 @@ func CreateTrigger(trigger *models.Trigger) error {
 	if err != nil {
 		return err
 	}
-	trigger.TriggerId = info
+	trigger.TriggerId = info.ID
 	return mgm.Coll(trigger).Create(trigger)
 }
 

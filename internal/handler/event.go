@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -67,10 +68,12 @@ func getTriggers(c *gin.Context) {
 func createTrigger(c *gin.Context) {
 	var trigger *models.Trigger
 	if err := c.ShouldBindJSON(&trigger); err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if err := services.CreateTrigger(trigger); err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Error creating trigger."})
 		return
 
@@ -95,6 +98,7 @@ func testTrigger(c *gin.Context) {
 	}
 	res, err := services.TestTrigger(trigger)
 	if err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Error creating trigger."})
 		return
 
@@ -118,6 +122,7 @@ func editTrigger(c *gin.Context) {
 	var updateData bson.M
 
 	if err := c.ShouldBindJSON(&updateData); err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -135,6 +140,7 @@ func editTrigger(c *gin.Context) {
 
 	err := services.EditTrigger(id, validUpdate)
 	if err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
@@ -154,6 +160,7 @@ func editTrigger(c *gin.Context) {
 func deleteTrigger(c *gin.Context) {
 	id := c.Query("triggerId")
 	if err := services.DeleteTrigger(id); err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Error deletion failed."})
 		return
 	}
